@@ -1,78 +1,151 @@
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FC26 Thailand Tournament</title>
+    <title>FC26 Pro League & Tournament</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap');
-        body { font-family: 'Kanit', sans-serif; background-color: #0f172a; color: white; }
-        .gradient-text { background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap');
+        body { font-family: 'Kanit', sans-serif; background-color: #0b0f1a; color: white; }
+        .card { background: #161d2f; border: 1px solid #2d3748; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .nav-btn.active { border-bottom: 4px solid #3b82f6; color: #3b82f6; }
     </style>
 </head>
-<body>
+<body class="pb-10">
 
-    <nav class="p-5 flex justify-between items-center bg-slate-900 sticky top-0 z-50 shadow-xl">
-        <h1 class="text-2xl font-bold gradient-text">FC26 TOURNAMENT</h1>
-        <div class="space-x-6 hidden md:block">
-            <a href="#home" class="hover:text-sky-400">หน้าแรก</a>
-            <a href="#rules" class="hover:text-sky-400">กติกา</a>
-            <a href="#bracket" class="hover:text-sky-400">ตารางแข่ง</a>
-            <a href="#register" class="bg-sky-500 px-4 py-2 rounded-full font-bold hover:bg-sky-600 transition">สมัครแข่ง</a>
-        </div>
-    </nav>
-
-    <header id="home" class="py-20 px-10 text-center bg-[url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&q=80&w=1920')] bg-cover bg-center bg-blend-overlay bg-slate-800">
-        <h2 class="text-5xl md:text-7xl font-extrabold mb-4">ปลดปล่อยความเป็น <span class="gradient-text">PRO</span></h2>
-        <p class="text-xl text-slate-300 mb-8">การแข่งขัน EA Sports FC 26 ที่ใหญ่ที่สุดประจำซีซั่น</p>
-        <div class="flex justify-center gap-4">
-            <a href="#register" class="bg-sky-500 text-white px-8 py-3 rounded-lg font-bold text-lg hover:scale-105 transition transform">ลงทะเบียนตัวจริง</a>
-            <a href="#" class="bg-white text-slate-900 px-8 py-3 rounded-lg font-bold text-lg hover:scale-105 transition transform">ดูถ่ายทอดสด</a>
-        </div>
+    <header class="bg-slate-900 border-b border-slate-700 p-6 text-center">
+        <h1 class="text-3xl font-bold italic text-blue-500">FC26 CHAMPIONSHIP HUB</h1>
+        <p class="text-slate-400 mt-2">ศูนย์รวมข้อมูลการแข่งขันอย่างเป็นทางการ</p>
     </header>
 
-    <section id="rules" class="py-16 px-5 max-w-6xl mx-auto">
-        <div class="grid md:grid-cols-3 gap-8">
-            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-sky-500 transition">
-                <i class="fas fa-trophy text-4xl text-yellow-400 mb-4"></i>
-                <h3 class="text-xl font-bold mb-2">เงินรางวัลรวม</h3>
-                <p class="text-slate-400">ชิงเงินรางวัลมูลค่ารวมกว่า 50,000 บาท และของรางวัลจากสปอนเซอร์</p>
-            </div>
-            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-sky-500 transition">
-                <i class="fas fa-users text-4xl text-sky-400 mb-4"></i>
-                <h3 class="text-xl font-bold mb-2">รูปแบบการแข่ง</h3>
-                <p class="text-slate-400">Double Elimination (แพ้สองครั้งคัดออก) | แข่งบน PS5 & PC</p>
-            </div>
-            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-sky-500 transition">
-                <i class="fas fa-calendar-alt text-4xl text-purple-400 mb-4"></i>
-                <h3 class="text-xl font-bold mb-2">ระยะเวลา</h3>
-                <p class="text-slate-400">เริ่มแข่ง 15 - 20 มีนาคม 2026 | รอบชิงชนะเลิศที่สยามพารากอน</p>
-            </div>
-        </div>
-    </section>
+    <nav class="flex justify-center bg-slate-900 sticky top-0 z-50 border-b border-slate-700">
+        <button onclick="openTab('players')" class="nav-btn active px-6 py-4 font-bold transition">รายชื่อนักกีฬา</button>
+        <button onclick="openTab('league')" class="nav-btn px-6 py-4 font-bold transition">ตารางคะแนน (League)</button>
+        <button onclick="openTab('knockout')" class="nav-btn px-6 py-4 font-bold transition">รอบน็อคเอาท์</button>
+    </nav>
 
-    <section id="bracket" class="py-16 bg-slate-900">
-        <div class="max-w-6xl mx-auto px-5 text-center">
-            <h2 class="text-3xl font-bold mb-10">สายการแข่งขัน (Tournament Bracket)</h2>
-            <div class="bg-slate-800 rounded-xl p-4 overflow-hidden shadow-2xl min-h-[400px] flex items-center justify-center border border-slate-700">
-                <p class="text-slate-500 italic">สายการแข่งจะอัปเดตหลังจากปิดรับสมัครในวันที่ 10 มีนาคม</p>
+    <main class="max-w-6xl mx-auto mt-8 px-4">
+
+        <div id="players" class="tab-content active">
+            <h2 class="text-2xl font-bold mb-6"><i class="fas fa-users mr-2"></i>นักกีฬาที่เข้าร่วม</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="card p-4 rounded-xl flex items-center space-x-4">
+                    <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-2xl font-bold">P1</div>
+                    <div>
+                        <p class="font-bold text-lg">Pro_Player_TH</p>
+                        <p class="text-sm text-slate-400 italic">Manchester City</p>
+                    </div>
+                </div>
+                <div class="card p-4 rounded-xl flex items-center space-x-4">
+                    <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center text-2xl font-bold">P2</div>
+                    <div>
+                        <p class="font-bold text-lg">Goal_Hunter</p>
+                        <p class="text-sm text-slate-400 italic">Real Madrid</p>
+                    </div>
+                </div>
+                <div class="card p-4 rounded-xl flex items-center space-x-4">
+                    <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center text-2xl font-bold">P3</div>
+                    <div>
+                        <p class="font-bold text-lg">SkillMove_Master</p>
+                        <p class="text-sm text-slate-400 italic">Bayern Munich</p>
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
 
-    <footer id="register" class="py-20 text-center border-t border-slate-800">
-        <h2 class="text-3xl font-bold mb-6">พร้อมที่จะลงสนามหรือยัง?</h2>
-        <p class="mb-8 text-slate-400">ติดต่อสอบถามข้อมูลเพิ่มเติมได้ที่ Discord หรือ Facebook Fanpage</p>
-        <div class="flex justify-center gap-6">
-            <a href="#" class="text-3xl hover:text-sky-400"><i class="fab fa-facebook"></i></a>
-            <a href="#" class="text-3xl hover:text-indigo-500"><i class="fab fa-discord"></i></a>
-            <a href="#" class="text-3xl hover:text-red-500"><i class="fab fa-youtube"></i></a>
+        <div id="league" class="tab-content">
+            <h2 class="text-2xl font-bold mb-6"><i class="fas fa-table mr-2"></i>ตารางคะแนนสะสม</h2>
+            <div class="card rounded-xl overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-800 text-slate-300">
+                        <tr>
+                            <th class="p-4">อันดับ</th>
+                            <th class="p-4">นักกีฬา</th>
+                            <th class="p-4 text-center">แข่ง</th>
+                            <th class="p-4 text-center">ชนะ</th>
+                            <th class="p-4 text-center">เสมอ</th>
+                            <th class="p-4 text-center">แพ้</th>
+                            <th class="p-4 text-center font-bold text-blue-400">แต้ม</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="p-4">1</td>
+                            <td class="p-4 font-bold text-yellow-500">Pro_Player_TH</td>
+                            <td class="p-4 text-center">3</td>
+                            <td class="p-4 text-center">3</td>
+                            <td class="p-4 text-center">0</td>
+                            <td class="p-4 text-center">0</td>
+                            <td class="p-4 text-center font-bold">9</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="p-4">2</td>
+                            <td class="p-4">Goal_Hunter</td>
+                            <td class="p-4 text-center">3</td>
+                            <td class="p-4 text-center">2</td>
+                            <td class="p-4 text-center">0</td>
+                            <td class="p-4 text-center">1</td>
+                            <td class="p-4 text-center font-bold">6</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <p class="mt-10 text-sm text-slate-600">© 2026 FC26 Thailand Community. All rights reserved.</p>
-    </footer>
+
+        <div id="knockout" class="tab-content">
+            <h2 class="text-2xl font-bold mb-6"><i class="fas fa-sitemap mr-2"></i>สายการแข่งขันรอบน็อคเอาท์</h2>
+            <div class="flex flex-col md:flex-row justify-between items-center space-y-8 md:space-y-0 bg-slate-800 p-10 rounded-2xl overflow-x-auto">
+                
+                <div class="space-y-8">
+                    <p class="text-center text-slate-400 font-bold mb-4 uppercase">Semi-Finals</p>
+                    <div class="card p-3 rounded shadow-lg border-l-4 border-blue-500 w-48 text-sm">
+                        <div class="flex justify-between border-b border-slate-600 pb-1 mb-1"><span>Pro_Player_TH</span> <span>2</span></div>
+                        <div class="flex justify-between"><span>Skill_Master</span> <span class="text-slate-500">1</span></div>
+                    </div>
+                    <div class="card p-3 rounded shadow-lg border-l-4 border-blue-500 w-48 text-sm">
+                        <div class="flex justify-between border-b border-slate-600 pb-1 mb-1"><span>Goal_Hunter</span> <span>0</span></div>
+                        <div class="flex justify-between font-bold"><span>WonderKid_07</span> <span>3</span></div>
+                    </div>
+                </div>
+
+                <div class="hidden md:block text-slate-600 font-bold text-2xl px-4">➡</div>
+
+                <div>
+                    <p class="text-center text-yellow-500 font-bold mb-4 uppercase text-lg">Grand Final</p>
+                    <div class="card p-5 rounded-xl shadow-2xl border-2 border-yellow-500 w-64 text-center">
+                        <p class="text-xs text-slate-400 mb-2 uppercase">15 มีนาคม | 20:00 น.</p>
+                        <p class="font-bold">Pro_Player_TH</p>
+                        <p class="text-2xl my-2">VS</p>
+                        <p class="font-bold italic">WonderKid_07</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        function openTab(tabName) {
+            // ซ่อนคอนเทนต์ทั้งหมด
+            const contents = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < contents.length; i++) {
+                contents[i].classList.remove("active");
+            }
+            // ลบคลาส active จากปุ่มทั้งหมด
+            const buttons = document.getElementsByClassName("nav-btn");
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove("active");
+            }
+            // แสดงคอนเทนต์ที่เลือกและไฮไลท์ปุ่ม
+            document.getElementById(tabName).classList.add("active");
+            event.currentTarget.classList.add("active");
+        }
+    </script>
 
 </body>
 </html>
