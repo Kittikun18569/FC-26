@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FC26 PRO KICKOFF | INTERACTIVE HUB</title>
+    <title>FC26 PRO LEAGUE - OFFICIAL APP</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -11,234 +11,207 @@
         
         body { font-family: 'Kanit', sans-serif; background-color: #020617; color: #f8fafc; overflow-x: hidden; }
         .font-vct { font-family: 'Barlow Condensed', sans-serif; }
-        .tab-active { color: #38bdf8; border-bottom: 3px solid #38bdf8; background: linear-gradient(to top, rgba(56, 189, 248, 0.1), transparent); }
-        .match-card { background: linear-gradient(145deg, #0f172a, #1e293b); border: 1px solid rgba(255,255,255,0.1); }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        /* สไตล์หน้าหลัก */
+        .page-node { display: none; min-height: 100vh; padding-bottom: 80px; }
+        .page-node.active { display: block; animation: fadeIn 0.3s ease-in; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Modal / Profile Styling */
+        .glass-card { background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+        .tab-btn.active { color: #38bdf8; }
+
+        /* Modal Team */
         #teamModal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1000;
-            background: rgba(2, 6, 23, 0.95);
-            backdrop-filter: blur(10px);
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1000; background: #020617; overflow-y: auto;
         }
-
-        #toast {
-            visibility: hidden; min-width: 250px; background-color: #38bdf8; color: #000;
-            text-align: center; border-radius: 8px; padding: 16px; position: fixed;
-            z-index: 1100; left: 50%; bottom: 80px; transform: translateX(-50%);
-            font-weight: bold;
-        }
-        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
-        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 80px; opacity: 1;} }
-        @keyframes fadeout { from {bottom: 80px; opacity: 1;} to {bottom: 0; opacity: 0;} }
     </style>
 </head>
-<body class="max-w-md mx-auto min-h-screen border-x border-white/5 relative pb-20">
+<body class="max-w-md mx-auto min-h-screen border-x border-white/5 relative">
 
-    <div id="toast">ข้อความแจ้งเตือน</div>
-
-    <div id="teamModal" class="p-6 overflow-y-auto">
+    <div id="teamModal" class="p-6">
         <div class="flex justify-between items-center mb-8">
-            <button onclick="closeTeamModal()" class="text-2xl"><i class="fas fa-times"></i></button>
-            <span class="font-vct text-sky-500 tracking-widest uppercase">Team Profile</span>
-            <button onclick="handleShare()" class="text-xl"><i class="fas fa-share-alt"></i></button>
+            <button onclick="closeTeamModal()" class="text-2xl"><i class="fas fa-chevron-left"></i></button>
+            <h2 id="mTeamName" class="font-vct text-2xl font-bold italic">TEAM NAME</h2>
+            <div class="w-8"></div>
         </div>
-        
-        <div class="flex flex-col items-center mb-8">
-            <div id="mTeamLogo" class="w-28 h-28 bg-slate-800 rounded-3xl border-2 border-sky-500 flex items-center justify-center mb-4 shadow-2xl shadow-sky-500/20">
-                </div>
-            <h2 id="mTeamName" class="text-3xl font-vct font-bold italic tracking-wider">TEAM NAME</h2>
-            <p id="mTeamRegion" class="text-slate-400 text-sm uppercase">Pacific League</p>
-        </div>
-
-        <div class="space-y-6">
-            <h3 class="font-bold text-lg border-l-4 border-sky-500 pl-3">Active Roster (นักกีฬา)</h3>
-            <div id="mPlayerList" class="grid grid-cols-1 gap-3">
-                </div>
-            
-            <div class="grid grid-cols-2 gap-4 mt-10">
-                <div class="bg-slate-900/50 p-4 rounded-xl border border-white/5 text-center">
-                    <p class="text-[10px] text-slate-500 uppercase">Win Rate</p>
-                    <p class="text-xl font-vct text-green-400">78%</p>
-                </div>
-                <div class="bg-slate-900/50 p-4 rounded-xl border border-white/5 text-center">
-                    <p class="text-[10px] text-slate-500 uppercase">Matches</p>
-                    <p class="text-xl font-vct">12</p>
-                </div>
-            </div>
-        </div>
+        <div id="mTeamLogo" class="w-32 h-32 mx-auto mb-6 bg-slate-800 rounded-3xl flex items-center justify-center border-2 border-sky-500 shadow-2xl shadow-sky-500/20"></div>
+        <h3 class="font-bold text-lg mb-4 border-l-4 border-sky-500 pl-3">Active Roster</h3>
+        <div id="mPlayerList" class="space-y-3"></div>
     </div>
 
-    <header class="relative pt-10 pb-6 px-6">
-        <div class="flex justify-between items-center mb-8">
-            <button onclick="handleAction('Main Menu')" class="p-2 hover:bg-white/10 rounded-full"><i class="fas fa-bars text-lg"></i></button>
-            <div class="flex gap-2">
-                <button id="notifBtn" onclick="toggleNotif()" class="p-2 text-slate-400"><i class="fas fa-bell text-lg"></i></button>
-                <button id="favBtn" onclick="toggleFav()" class="p-2 text-slate-400"><i class="fas fa-heart text-lg"></i></button>
-            </div>
-        </div>
+    <section id="home-page" class="page-node active">
+        <header class="pt-12 pb-6 px-6 text-center">
+            <h1 class="text-3xl font-vct font-bold italic tracking-widest text-sky-500">FC26 PACIFIC</h1>
+            <p class="text-xs text-slate-500 uppercase tracking-[0.3em]">Official Tournament Hub</p>
+        </header>
 
-        <div class="flex flex-col items-center">
-            <div class="w-20 h-20 mb-4 bg-sky-500 rounded-2xl flex items-center justify-center shadow-lg shadow-sky-500/30 rotate-3">
-                <i class="fas fa-trophy text-white text-3xl"></i>
+        <main class="p-5 space-y-8">
+            <div class="glass-card p-5 rounded-2xl">
+                <p class="text-[10px] font-bold text-sky-400 mb-4 uppercase tracking-widest">Featured Match</p>
+                <div class="flex justify-between items-center">
+                    <div class="text-center w-20">
+                        <div class="w-12 h-12 bg-slate-800 rounded-lg mx-auto mb-2 flex items-center justify-center font-bold">TLN</div>
+                        <p class="text-[10px] font-bold">TALON</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-2xl font-vct font-bold italic">VS</p>
+                        <p class="text-[10px] text-slate-500">18:00 (GMT+7)</p>
+                    </div>
+                    <div class="text-center w-20">
+                        <div class="w-12 h-12 bg-slate-800 rounded-lg mx-auto mb-2 flex items-center justify-center font-bold">DRX</div>
+                        <p class="text-[10px] font-bold">DRX</p>
+                    </div>
+                </div>
             </div>
-            <h1 class="text-2xl font-vct font-bold tracking-wider text-center uppercase">FC26 PACIFIC LEAGUE</h1>
-            <div class="flex gap-3 mt-6 w-full px-4">
-                <button id="followBtn" onclick="handleFollow()" class="flex-1 bg-white text-black font-bold py-3 rounded-xl text-sm transition active:scale-95">Follow</button>
-                <button onclick="handleShare()" class="bg-slate-800 px-5 rounded-xl text-white active:scale-95"><i class="fas fa-share-alt"></i></button>
-            </div>
-        </div>
-    </header>
 
-    <nav class="flex border-b border-white/5 sticky top-0 bg-[#020617]/95 backdrop-blur-md z-50">
-        <button onclick="showTab('overview', this)" class="tab-btn flex-1 py-4 text-[11px] font-bold uppercase tracking-widest tab-active">Overview</button>
-        <button onclick="showTab('schedule', this)" class="tab-btn flex-1 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-500">Schedule</button>
-        <button onclick="showTab('more', this)" class="tab-btn flex-1 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-500">Info</button>
-    </nav>
-
-    <main class="p-5">
-        <div id="overview" class="tab-pane block space-y-8">
             <div class="space-y-4">
-                <h2 class="font-vct text-xl uppercase italic">Participants</h2>
-                <div class="grid grid-cols-4 gap-y-8">
+                <h2 class="font-vct text-xl italic uppercase border-b border-white/10 pb-2">Participants</h2>
+                <div class="grid grid-cols-4 gap-y-6">
                     <script>
                         const teamData = {
+                            "TLN": ["Crws", "Patiphan", "Sushiboys", "foxz", "JitboyS"],
                             "DRX": ["Stax", "Buzz", "MaKo", "Foxy9", "BeYN"],
                             "PRX": ["f0rsakeN", "mindfreak", "d4v41", "something", "Jinggg"],
-                            "T1": ["Sayaplayer", "Carpe", "xccurate", "iZu", "Rossy"],
                             "GEN": ["Munchkin", "t3xture", "Meteor", "Lakia", "Karon"],
+                            "T1": ["Sayaplayer", "Carpe", "xccurate", "iZu", "Rossy"],
                             "ZETA": ["Laz", "Dep", "SugarZ3ro", "Hiroronn", "Yuran"],
-                            "DFM": ["Meiy", "Sura", "Anthem", "Medusa", "neth"],
-                            "TLN": ["Crws", "Patiphan", "Sushiboys", "foxz", "JitboyS"],
-                            "RRQ": ["xffero", "Lmemore", "Estrella", "Jemkin", "Monyet"]
-                            // ทีมอื่นๆ สามารถเพิ่มได้ในรูปแบบเดียวกัน
+                            "RRQ": ["xffero", "Lmemore", "Estrella", "Jemkin", "Monyet"],
+                            "TS": ["JessieVash", "DubsteP", "BORKUM", "Jremy", "Invy"]
                         };
-                        const teams = Object.keys(teamData);
-                        // ถ้าทีมไม่พอ 16 ให้สุ่มทีมจำลองเพิ่มให้ครบ
-                        const allTeams = [...teams, "GE", "TS", "BLD", "FS", "VL", "NS", "RNG", "EDG"];
-
-                        allTeams.forEach(team => {
+                        Object.keys(teamData).forEach(team => {
                             document.write(`
                                 <div onclick="openTeamProfile('${team}')" class="flex flex-col items-center gap-2 group cursor-pointer">
-                                    <div class="w-16 h-16 rounded-2xl bg-slate-900 border border-white/10 flex items-center justify-center group-active:scale-90 transition shadow-lg">
+                                    <div class="w-16 h-16 rounded-2xl bg-slate-900 border border-white/5 flex items-center justify-center group-active:scale-95 transition shadow-lg">
                                         <img src="https://api.dicebear.com/7.x/initials/svg?seed=${team}&backgroundColor=0f172a" class="w-10 h-10 rounded-lg" />
                                     </div>
-                                    <span class="text-[10px] font-bold text-slate-400 uppercase">${team}</span>
+                                    <span class="text-[10px] font-bold text-slate-400">${team}</span>
                                 </div>
                             `);
                         });
                     </script>
                 </div>
             </div>
-        </div>
+        </main>
+    </section>
 
-        <div id="schedule" class="tab-pane hidden space-y-6">
-            <h2 class="font-vct text-xl uppercase italic">Match Schedule</h2>
-            <div class="match-card p-5 rounded-2xl flex justify-between items-center mb-4 cursor-pointer" onclick="handleAction('Match Details')">
-                <span class="font-bold">TLN</span>
-                <div class="text-center">
-                    <p class="text-xs text-sky-400 font-bold">18:00</p>
-                    <p class="text-[9px] uppercase tracking-widest text-slate-500">Tomorrow</p>
+    <section id="discover-page" class="page-node">
+        <header class="pt-12 pb-6 px-6">
+            <h2 class="text-2xl font-vct font-bold italic uppercase">Discover</h2>
+        </header>
+        <main class="p-5 space-y-4">
+            <div class="glass-card p-6 rounded-2xl flex items-center gap-4 cursor-pointer" onclick="alert('Open News')">
+                <i class="fas fa-newspaper text-2xl text-sky-400"></i>
+                <div>
+                    <p class="font-bold">Latest News</p>
+                    <p class="text-xs text-slate-500">อัปเดตข่าวสารวงการ FC26</p>
                 </div>
-                <span class="font-bold">DRX</span>
             </div>
-        </div>
+            <div class="glass-card p-6 rounded-2xl flex items-center gap-4 cursor-pointer" onclick="alert('Open Prize Pool')">
+                <i class="fas fa-trophy text-2xl text-amber-500"></i>
+                <div>
+                    <p class="font-bold">Prize Pool</p>
+                    <p class="text-xs text-slate-500">รายละเอียดรางวัลรวม $250,000</p>
+                </div>
+            </div>
+            <div class="glass-card p-6 rounded-2xl flex items-center gap-4 cursor-pointer" onclick="alert('Open Standings')">
+                <i class="fas fa-table text-2xl text-purple-500"></i>
+                <div>
+                    <p class="font-bold">Standings</p>
+                    <p class="text-xs text-slate-500">ตารางคะแนนล่าสุดทุกกลุ่ม</p>
+                </div>
+            </div>
+        </main>
+    </section>
 
-        <div id="more" class="tab-pane hidden space-y-4">
-             <div onclick="handleAction('Prize Pool')" class="match-card p-5 rounded-2xl flex justify-between items-center cursor-pointer">
-                <span class="font-bold italic uppercase font-vct">Prize Pool</span>
-                <span class="text-amber-500 font-bold">$250,000</span>
-             </div>
-             <div onclick="handleAction('Rules')" class="match-card p-5 rounded-2xl flex justify-between items-center cursor-pointer">
-                <span class="font-bold italic uppercase font-vct">Tournament Rules</span>
+    <section id="mypage-page" class="page-node">
+        <header class="pt-12 pb-6 px-6 text-center">
+            <div class="w-20 h-20 bg-slate-800 rounded-full mx-auto mb-4 border-2 border-sky-500 flex items-center justify-center">
+                <i class="fas fa-user text-3xl"></i>
+            </div>
+            <h2 class="text-xl font-bold">Guest User</h2>
+            <p class="text-xs text-slate-500 mt-1">ID: 456-990-26</p>
+        </header>
+        <main class="p-5 space-y-2">
+            <button class="w-full glass-card p-4 rounded-xl text-left flex justify-between items-center">
+                <span>Account Settings</span>
                 <i class="fas fa-chevron-right text-slate-600"></i>
-             </div>
-        </div>
-    </main>
+            </button>
+            <button class="w-full glass-card p-4 rounded-xl text-left flex justify-between items-center">
+                <span>Language (ภาษาไทย)</span>
+                <i class="fas fa-chevron-right text-slate-600"></i>
+            </button>
+            <button class="w-full glass-card p-4 rounded-xl text-left flex justify-between items-center text-red-400">
+                <span>Sign Out</span>
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </main>
+    </section>
 
     <footer class="fixed bottom-0 w-full max-w-md bg-[#020617] border-t border-white/5 flex justify-around py-4 z-50">
-        <button onclick="handleAction('Home')" class="flex flex-col items-center gap-1 text-sky-500"><i class="fas fa-home text-xl"></i></button>
-        <button onclick="handleAction('Discover')" class="flex flex-col items-center gap-1 text-slate-500"><i class="fas fa-compass text-xl"></i></button>
-        <button onclick="handleAction('My Page')" class="flex flex-col items-center gap-1 text-slate-500"><i class="fas fa-user text-xl"></i></button>
+        <button onclick="navigateTo('home')" class="tab-btn active flex flex-col items-center gap-1 transition">
+            <i class="fas fa-home text-xl"></i>
+            <span class="text-[9px] font-bold uppercase tracking-tighter">Home</span>
+        </button>
+        <button onclick="navigateTo('discover')" class="tab-btn flex flex-col items-center gap-1 text-slate-500 transition">
+            <i class="fas fa-compass text-xl"></i>
+            <span class="text-[9px] font-bold uppercase tracking-tighter">Discover</span>
+        </button>
+        <button onclick="navigateTo('mypage')" class="tab-btn flex flex-col items-center gap-1 text-slate-500 transition">
+            <i class="fas fa-user text-xl"></i>
+            <span class="text-[9px] font-bold uppercase tracking-tighter">My Page</span>
+        </button>
     </footer>
 
     <script>
-        function showToast(msg) {
-            const t = document.getElementById("toast");
-            t.innerText = msg; t.className = "show";
-            setTimeout(() => { t.className = ""; }, 3000);
+        // ระบบนำทางระหว่างหน้า
+        function navigateTo(pageId) {
+            // ซ่อนทุกหน้า
+            document.querySelectorAll('.page-node').forEach(page => {
+                page.classList.remove('active');
+            });
+            // แสดงหน้าที่เลือก
+            document.getElementById(pageId + '-page').classList.add('active');
+
+            // อัปเดตสีปุ่ม Navbar
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.add('text-slate-500');
+            });
+            event.currentTarget.classList.add('active');
+            event.currentTarget.classList.remove('text-slate-500');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function showTab(tabId, btn) {
-            document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
-            document.getElementById(tabId).classList.remove('hidden');
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
-            btn.classList.add('tab-active');
-        }
-
-        // Logic เปิดหน้าต่างทีม
+        // ระบบเปิด/ปิด หน้าข้อมูลทีม
         function openTeamProfile(teamName) {
             const modal = document.getElementById("teamModal");
-            const mName = document.getElementById("mTeamName");
-            const mLogo = document.getElementById("mTeamLogo");
-            const mPlayers = document.getElementById("mPlayerList");
-
-            mName.innerText = teamName;
-            mLogo.innerHTML = `<img src="https://api.dicebear.com/7.x/initials/svg?seed=${teamName}&backgroundColor=0f172a" class="w-20 h-20 rounded-xl" />`;
+            document.getElementById("mTeamName").innerText = teamName;
+            document.getElementById("mTeamLogo").innerHTML = `
+                <img src="https://api.dicebear.com/7.x/initials/svg?seed=${teamName}&backgroundColor=0f172a" class="w-20 h-20 rounded-xl" />
+            `;
             
-            // ใส่รายชื่อนักกีฬา
             const players = teamData[teamName] || ["Player 1", "Player 2", "Player 3", "Player 4", "Player 5"];
-            mPlayers.innerHTML = players.map(p => `
-                <div class="bg-white/5 p-4 rounded-xl flex justify-between items-center border border-white/5">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-sky-500/20 flex items-center justify-center text-[10px] font-bold text-sky-400">${p[0]}</div>
+            document.getElementById("mPlayerList").innerHTML = players.map(p => `
+                <div class="glass-card p-4 rounded-xl flex justify-between items-center">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-sky-500/10 flex items-center justify-center text-sky-400 font-bold">${p[0]}</div>
                         <span class="font-medium">${p}</span>
                     </div>
-                    <span class="text-[10px] text-slate-500 font-bold uppercase">Pro Player</span>
+                    <span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest italic">Pro</span>
                 </div>
             `).join('');
 
             modal.style.display = "block";
-            document.body.style.overflow = "hidden"; // ล็อกการเลื่อนหน้า
+            document.body.style.overflow = "hidden";
         }
 
         function closeTeamModal() {
             document.getElementById("teamModal").style.display = "none";
             document.body.style.overflow = "auto";
         }
-
-        function handleFollow() {
-            const b = document.getElementById("followBtn");
-            if(b.innerText === "Follow") {
-                b.innerText = "Following"; b.className = "flex-1 bg-sky-500 text-white font-bold py-3 rounded-xl text-sm";
-                showToast("✅ ติดตามแล้ว!");
-            } else {
-                b.innerText = "Follow"; b.className = "flex-1 bg-white text-black font-bold py-3 rounded-xl text-sm";
-                showToast("ยกเลิกการติดตาม");
-            }
-        }
-
-        function toggleNotif() {
-            const i = document.querySelector("#notifBtn i");
-            const isOff = i.parentElement.classList.contains("text-slate-400");
-            i.parentElement.classList.toggle("text-slate-400");
-            i.parentElement.classList.toggle("text-sky-400");
-            showToast(isOff ? "🔔 เปิดแจ้งเตือนแมตช์" : "🔕 ปิดแจ้งเตือน");
-        }
-
-        function toggleFav() {
-            const i = document.querySelector("#favBtn i");
-            const isOff = i.parentElement.classList.contains("text-slate-400");
-            i.parentElement.classList.toggle("text-slate-400");
-            i.parentElement.classList.toggle("text-red-500");
-            showToast(isOff ? "❤️ เพิ่มในรายการโปรด" : "นำออกจากรายการโปรด");
-        }
-
-        function handleShare() { showToast("🔗 คัดลอกลิงก์เรียบร้อย!"); }
-        function handleAction(name) { showToast("เข้าสู่หน้า: " + name); }
     </script>
 </body>
 </html>
