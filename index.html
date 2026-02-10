@@ -3,159 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FC26 PRO KICKOFF | OFFICIAL HUB</title>
+    <title>FC26 PRO KICKOFF | INTERACTIVE HUB</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Barlow+Condensed:wght@600;700&display=swap');
         
-        body { 
-            font-family: 'Kanit', sans-serif; 
-            background-color: #020617; 
-            color: #f8fafc;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        body { font-family: 'Kanit', sans-serif; background-color: #020617; color: #f8fafc; overflow-x: hidden; }
         .font-vct { font-family: 'Barlow Condensed', sans-serif; }
-        
-        .tab-active { 
-            color: #38bdf8; 
-            border-bottom: 3px solid #38bdf8;
-            background: linear-gradient(to top, rgba(56, 189, 248, 0.1), transparent);
-        }
+        .tab-active { color: #38bdf8; border-bottom: 3px solid #38bdf8; background: linear-gradient(to top, rgba(56, 189, 248, 0.1), transparent); }
+        .match-card { background: linear-gradient(145deg, #0f172a, #1e293b); border: 1px solid rgba(255,255,255,0.1); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        .match-card {
-            background: linear-gradient(145deg, #0f172a, #1e293b);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.3s ease;
-        }
-
-        .match-card:active { scale: 0.98; }
-
-        .participant-dot {
-            background: #1e293b;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
-
-        .participant-dot:active { scale: 0.9; border-color: #38bdf8; }
-
-        /* Custom Notification Toast */
-        #toast {
-            visibility: hidden;
-            min-width: 250px;
-            background-color: #38bdf8;
-            color: #000;
-            text-align: center;
-            border-radius: 8px;
-            padding: 16px;
+        /* Modal / Profile Styling */
+        #teamModal {
+            display: none;
             position: fixed;
-            z-index: 100;
-            left: 50%;
-            bottom: 80px;
-            transform: translateX(-50%);
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1000;
+            background: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        #toast {
+            visibility: hidden; min-width: 250px; background-color: #38bdf8; color: #000;
+            text-align: center; border-radius: 8px; padding: 16px; position: fixed;
+            z-index: 1100; left: 50%; bottom: 80px; transform: translateX(-50%);
             font-weight: bold;
         }
-
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
-
         @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 80px; opacity: 1;} }
         @keyframes fadeout { from {bottom: 80px; opacity: 1;} to {bottom: 0; opacity: 0;} }
     </style>
 </head>
-<body class="max-w-md mx-auto min-h-screen border-x border-white/5 shadow-2xl relative pb-20">
+<body class="max-w-md mx-auto min-h-screen border-x border-white/5 relative pb-20">
 
     <div id="toast">ข้อความแจ้งเตือน</div>
 
-    <header class="relative pt-10 pb-6 px-6 bg-gradient-to-b from-blue-900/20 to-[#020617]">
+    <div id="teamModal" class="p-6 overflow-y-auto">
         <div class="flex justify-between items-center mb-8">
-            <button onclick="handleAction('Back')" class="p-2 hover:bg-white/10 rounded-full transition"><i class="fas fa-arrow-left text-lg"></i></button>
+            <button onclick="closeTeamModal()" class="text-2xl"><i class="fas fa-times"></i></button>
+            <span class="font-vct text-sky-500 tracking-widest uppercase">Team Profile</span>
+            <button onclick="handleShare()" class="text-xl"><i class="fas fa-share-alt"></i></button>
+        </div>
+        
+        <div class="flex flex-col items-center mb-8">
+            <div id="mTeamLogo" class="w-28 h-28 bg-slate-800 rounded-3xl border-2 border-sky-500 flex items-center justify-center mb-4 shadow-2xl shadow-sky-500/20">
+                </div>
+            <h2 id="mTeamName" class="text-3xl font-vct font-bold italic tracking-wider">TEAM NAME</h2>
+            <p id="mTeamRegion" class="text-slate-400 text-sm uppercase">Pacific League</p>
+        </div>
+
+        <div class="space-y-6">
+            <h3 class="font-bold text-lg border-l-4 border-sky-500 pl-3">Active Roster (นักกีฬา)</h3>
+            <div id="mPlayerList" class="grid grid-cols-1 gap-3">
+                </div>
+            
+            <div class="grid grid-cols-2 gap-4 mt-10">
+                <div class="bg-slate-900/50 p-4 rounded-xl border border-white/5 text-center">
+                    <p class="text-[10px] text-slate-500 uppercase">Win Rate</p>
+                    <p class="text-xl font-vct text-green-400">78%</p>
+                </div>
+                <div class="bg-slate-900/50 p-4 rounded-xl border border-white/5 text-center">
+                    <p class="text-[10px] text-slate-500 uppercase">Matches</p>
+                    <p class="text-xl font-vct">12</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <header class="relative pt-10 pb-6 px-6">
+        <div class="flex justify-between items-center mb-8">
+            <button onclick="handleAction('Main Menu')" class="p-2 hover:bg-white/10 rounded-full"><i class="fas fa-bars text-lg"></i></button>
             <div class="flex gap-2">
-                <button id="notifBtn" onclick="toggleNotif()" class="p-2 hover:bg-white/10 rounded-full transition text-slate-400">
-                    <i class="fas fa-bell text-lg"></i>
-                </button>
-                <button id="favBtn" onclick="toggleFav()" class="p-2 hover:bg-white/10 rounded-full transition text-slate-400">
-                    <i class="fas fa-heart text-lg"></i>
-                </button>
+                <button id="notifBtn" onclick="toggleNotif()" class="p-2 text-slate-400"><i class="fas fa-bell text-lg"></i></button>
+                <button id="favBtn" onclick="toggleFav()" class="p-2 text-slate-400"><i class="fas fa-heart text-lg"></i></button>
             </div>
         </div>
 
         <div class="flex flex-col items-center">
-            <div class="w-24 h-24 mb-4 relative group">
-                <div class="absolute inset-0 bg-sky-500 blur-2xl opacity-20"></div>
-                <div class="relative w-full h-full bg-slate-900 rounded-full border-2 border-sky-500 flex items-center justify-center overflow-hidden">
-                    <img src="https://api.dicebear.com/7.x/identicon/svg?seed=fc26" class="w-16 h-16" alt="Logo">
-                </div>
+            <div class="w-20 h-20 mb-4 bg-sky-500 rounded-2xl flex items-center justify-center shadow-lg shadow-sky-500/30 rotate-3">
+                <i class="fas fa-trophy text-white text-3xl"></i>
             </div>
-            <h1 class="text-2xl font-vct font-bold tracking-wider uppercase text-center">FC26 PACIFIC KICKOFF</h1>
-            <p class="text-sky-400 text-[10px] font-bold tracking-[0.2em] mb-4">TOURNAMENT HUB</p>
-            
-            <div class="flex gap-3 mt-2 w-full px-4">
-                <button id="followBtn" onclick="handleFollow()" class="flex-1 bg-white text-black font-bold py-3 rounded-xl text-sm transition active:scale-95 shadow-lg">Follow</button>
-                <button onclick="handleShare()" class="bg-slate-800 px-5 rounded-xl hover:bg-slate-700 transition active:scale-95 text-white">
-                    <i class="fas fa-share-alt"></i>
-                </button>
+            <h1 class="text-2xl font-vct font-bold tracking-wider text-center uppercase">FC26 PACIFIC LEAGUE</h1>
+            <div class="flex gap-3 mt-6 w-full px-4">
+                <button id="followBtn" onclick="handleFollow()" class="flex-1 bg-white text-black font-bold py-3 rounded-xl text-sm transition active:scale-95">Follow</button>
+                <button onclick="handleShare()" class="bg-slate-800 px-5 rounded-xl text-white active:scale-95"><i class="fas fa-share-alt"></i></button>
             </div>
         </div>
     </header>
 
     <nav class="flex border-b border-white/5 sticky top-0 bg-[#020617]/95 backdrop-blur-md z-50">
-        <button onclick="showTab('overview', this)" class="tab-btn flex-1 py-4 text-[11px] font-bold uppercase tracking-widest tab-active transition-all">Overview</button>
-        <button onclick="showTab('schedule', this)" class="tab-btn flex-1 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-500 transition-all">Schedule</button>
-        <button onclick="showTab('more', this)" class="tab-btn flex-1 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-500 transition-all">More Info</button>
+        <button onclick="showTab('overview', this)" class="tab-btn flex-1 py-4 text-[11px] font-bold uppercase tracking-widest tab-active">Overview</button>
+        <button onclick="showTab('schedule', this)" class="tab-btn flex-1 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-500">Schedule</button>
+        <button onclick="showTab('more', this)" class="tab-btn flex-1 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-500">Info</button>
     </nav>
 
     <main class="p-5">
-        
-        <div id="overview" class="tab-pane block space-y-8 animate-in fade-in duration-500">
-            
+        <div id="overview" class="tab-pane block space-y-8">
             <div class="space-y-4">
-                <div class="flex justify-between items-center">
-                    <h2 class="font-vct text-xl uppercase italic tracking-tighter text-slate-200">Next Matches</h2>
-                    <button onclick="handleAction('View All Matches')" class="text-sky-500 text-[10px] font-bold hover:underline">VIEW ALL</button>
-                </div>
-                <div class="flex gap-4 overflow-x-auto no-scrollbar pb-2">
-                    <div onclick="handleAction('Match Details: DRX vs PRX')" class="match-card min-w-[300px] p-5 rounded-2xl cursor-pointer">
-                        <div class="flex justify-between items-start mb-5">
-                            <span class="bg-sky-500 text-black text-[9px] px-2 py-1 rounded font-black uppercase">Live in 2h</span>
-                            <span class="text-[10px] text-slate-400 font-bold">Feb 12 • 15:00</span>
-                        </div>
-                        <div class="space-y-5">
-                            <div class="flex justify-between items-center">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center border border-white/5 font-black text-xs">DRX</div>
-                                    <span class="font-bold text-sm tracking-tight">DRX Esports</span>
-                                </div>
-                                <span class="font-vct text-slate-500 text-xl">-</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center border border-white/5 font-black text-xs text-orange-400">PRX</div>
-                                    <span class="font-bold text-sm tracking-tight">Paper Rex</span>
-                                </div>
-                                <span class="font-vct text-slate-500 text-xl">-</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="space-y-6">
-                <div class="flex justify-between items-center">
-                    <h2 class="font-vct text-xl uppercase italic tracking-tighter">Participants <span class="text-sky-500 ml-1">16</span></h2>
-                    <i class="fas fa-search text-slate-500" onclick="handleAction('Search Team')"></i>
-                </div>
-                
+                <h2 class="font-vct text-xl uppercase italic">Participants</h2>
                 <div class="grid grid-cols-4 gap-y-8">
                     <script>
-                        const teams = ["DRX", "PRX", "T1", "GEN", "ZETA", "DFM", "GE", "RRQ", "TS", "TLN", "BLD", "FS", "VL", "NS", "RNG", "EDG"];
-                        teams.forEach(team => {
+                        const teamData = {
+                            "DRX": ["Stax", "Buzz", "MaKo", "Foxy9", "BeYN"],
+                            "PRX": ["f0rsakeN", "mindfreak", "d4v41", "something", "Jinggg"],
+                            "T1": ["Sayaplayer", "Carpe", "xccurate", "iZu", "Rossy"],
+                            "GEN": ["Munchkin", "t3xture", "Meteor", "Lakia", "Karon"],
+                            "ZETA": ["Laz", "Dep", "SugarZ3ro", "Hiroronn", "Yuran"],
+                            "DFM": ["Meiy", "Sura", "Anthem", "Medusa", "neth"],
+                            "TLN": ["Crws", "Patiphan", "Sushiboys", "foxz", "JitboyS"],
+                            "RRQ": ["xffero", "Lmemore", "Estrella", "Jemkin", "Monyet"]
+                            // ทีมอื่นๆ สามารถเพิ่มได้ในรูปแบบเดียวกัน
+                        };
+                        const teams = Object.keys(teamData);
+                        // ถ้าทีมไม่พอ 16 ให้สุ่มทีมจำลองเพิ่มให้ครบ
+                        const allTeams = [...teams, "GE", "TS", "BLD", "FS", "VL", "NS", "RNG", "EDG"];
+
+                        allTeams.forEach(team => {
                             document.write(`
-                                <div onclick="handleAction('Team Profile: ${team}')" class="flex flex-col items-center gap-3 group">
-                                    <div class="participant-dot w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:bg-slate-700 transition cursor-pointer">
-                                        <img src="https://api.dicebear.com/7.x/initials/svg?seed=${team}&backgroundColor=0f172a&fontFamily=Arial&bold=true" class="w-10 h-10 rounded-lg" />
+                                <div onclick="openTeamProfile('${team}')" class="flex flex-col items-center gap-2 group cursor-pointer">
+                                    <div class="w-16 h-16 rounded-2xl bg-slate-900 border border-white/10 flex items-center justify-center group-active:scale-90 transition shadow-lg">
+                                        <img src="https://api.dicebear.com/7.x/initials/svg?seed=${team}&backgroundColor=0f172a" class="w-10 h-10 rounded-lg" />
                                     </div>
-                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter group-hover:text-sky-400 transition">${team}</span>
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase">${team}</span>
                                 </div>
                             `);
                         });
@@ -165,128 +136,109 @@
         </div>
 
         <div id="schedule" class="tab-pane hidden space-y-6">
-            <h2 class="font-vct text-2xl uppercase italic border-l-4 border-sky-500 pl-3">Schedule</h2>
-            <div class="space-y-4">
-                <div class="flex gap-5">
-                    <div class="w-12 text-center pt-2">
-                        <p class="text-[10px] font-bold text-slate-500 uppercase">Fri</p>
-                        <p class="text-2xl font-vct text-sky-400">13</p>
-                    </div>
-                    <div class="flex-1 space-y-3">
-                        <div onclick="handleAction('Match details: T1 vs GEN')" class="match-card p-5 rounded-2xl flex justify-between items-center cursor-pointer">
-                            <span class="text-xs font-bold w-12 text-left">T1</span>
-                            <div class="text-center px-4 bg-slate-900/50 py-1 rounded-lg">
-                                <p class="text-xs font-bold text-white">14:00</p>
-                                <p class="text-[8px] text-sky-500 font-bold uppercase tracking-widest">Upcoming</p>
-                            </div>
-                            <span class="text-xs font-bold w-12 text-right">GEN</span>
-                        </div>
-                    </div>
+            <h2 class="font-vct text-xl uppercase italic">Match Schedule</h2>
+            <div class="match-card p-5 rounded-2xl flex justify-between items-center mb-4 cursor-pointer" onclick="handleAction('Match Details')">
+                <span class="font-bold">TLN</span>
+                <div class="text-center">
+                    <p class="text-xs text-sky-400 font-bold">18:00</p>
+                    <p class="text-[9px] uppercase tracking-widest text-slate-500">Tomorrow</p>
                 </div>
+                <span class="font-bold">DRX</span>
             </div>
         </div>
 
-        <div id="more" class="tab-pane hidden space-y-6">
-            <h2 class="font-vct text-2xl uppercase italic border-l-4 border-amber-500 pl-3">More Info</h2>
-            <div class="grid grid-cols-2 gap-4">
-                <div onclick="handleAction('Open Rules')" class="match-card p-6 rounded-2xl text-center cursor-pointer">
-                    <i class="fas fa-file-contract text-2xl mb-3 text-sky-400"></i>
-                    <p class="text-xs font-bold uppercase">Rules</p>
-                </div>
-                <div onclick="handleAction('Open Prize Pool')" class="match-card p-6 rounded-2xl text-center cursor-pointer">
-                    <i class="fas fa-hand-holding-usd text-2xl mb-3 text-amber-500"></i>
-                    <p class="text-xs font-bold uppercase">Prize Pool</p>
-                </div>
-            </div>
+        <div id="more" class="tab-pane hidden space-y-4">
+             <div onclick="handleAction('Prize Pool')" class="match-card p-5 rounded-2xl flex justify-between items-center cursor-pointer">
+                <span class="font-bold italic uppercase font-vct">Prize Pool</span>
+                <span class="text-amber-500 font-bold">$250,000</span>
+             </div>
+             <div onclick="handleAction('Rules')" class="match-card p-5 rounded-2xl flex justify-between items-center cursor-pointer">
+                <span class="font-bold italic uppercase font-vct">Tournament Rules</span>
+                <i class="fas fa-chevron-right text-slate-600"></i>
+             </div>
         </div>
-
     </main>
 
     <footer class="fixed bottom-0 w-full max-w-md bg-[#020617] border-t border-white/5 flex justify-around py-4 z-50">
-        <button onclick="handleAction('Navigate: Home')" class="flex flex-col items-center gap-1 text-sky-500 group">
-            <i class="fas fa-home text-xl group-active:scale-90 transition"></i>
-            <span class="text-[9px] font-bold uppercase tracking-tighter">Home</span>
-        </button>
-        <button onclick="handleAction('Navigate: Discover')" class="flex flex-col items-center gap-1 text-slate-500 group">
-            <i class="fas fa-compass text-xl group-active:scale-90 transition"></i>
-            <span class="text-[9px] font-bold uppercase tracking-tighter">Discover</span>
-        </button>
-        <button onclick="handleAction('Navigate: Favorites')" class="flex flex-col items-center gap-1 text-slate-500 group">
-            <i class="fas fa-heart text-xl group-active:scale-90 transition"></i>
-            <span class="text-[9px] font-bold uppercase tracking-tighter">My Follows</span>
-        </button>
+        <button onclick="handleAction('Home')" class="flex flex-col items-center gap-1 text-sky-500"><i class="fas fa-home text-xl"></i></button>
+        <button onclick="handleAction('Discover')" class="flex flex-col items-center gap-1 text-slate-500"><i class="fas fa-compass text-xl"></i></button>
+        <button onclick="handleAction('My Page')" class="flex flex-col items-center gap-1 text-slate-500"><i class="fas fa-user text-xl"></i></button>
     </footer>
 
     <script>
-        // 1. ระบบจัดการ Notification Toast
-        function showToast(message) {
-            const toast = document.getElementById("toast");
-            toast.innerText = message;
-            toast.className = "show";
-            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+        function showToast(msg) {
+            const t = document.getElementById("toast");
+            t.innerText = msg; t.className = "show";
+            setTimeout(() => { t.className = ""; }, 3000);
         }
 
-        // 2. ระบบจัดการการสลับ Tab
         function showTab(tabId, btn) {
             document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
             document.getElementById(tabId).classList.remove('hidden');
-            
-            document.querySelectorAll('.tab-btn').forEach(b => {
-                b.classList.remove('tab-active');
-                b.classList.add('text-slate-500');
-            });
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
             btn.classList.add('tab-active');
-            btn.classList.remove('text-slate-500');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 3. ระบบจัดการปุ่มต่างๆ (Interactive)
+        // Logic เปิดหน้าต่างทีม
+        function openTeamProfile(teamName) {
+            const modal = document.getElementById("teamModal");
+            const mName = document.getElementById("mTeamName");
+            const mLogo = document.getElementById("mTeamLogo");
+            const mPlayers = document.getElementById("mPlayerList");
+
+            mName.innerText = teamName;
+            mLogo.innerHTML = `<img src="https://api.dicebear.com/7.x/initials/svg?seed=${teamName}&backgroundColor=0f172a" class="w-20 h-20 rounded-xl" />`;
+            
+            // ใส่รายชื่อนักกีฬา
+            const players = teamData[teamName] || ["Player 1", "Player 2", "Player 3", "Player 4", "Player 5"];
+            mPlayers.innerHTML = players.map(p => `
+                <div class="bg-white/5 p-4 rounded-xl flex justify-between items-center border border-white/5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-sky-500/20 flex items-center justify-center text-[10px] font-bold text-sky-400">${p[0]}</div>
+                        <span class="font-medium">${p}</span>
+                    </div>
+                    <span class="text-[10px] text-slate-500 font-bold uppercase">Pro Player</span>
+                </div>
+            `).join('');
+
+            modal.style.display = "block";
+            document.body.style.overflow = "hidden"; // ล็อกการเลื่อนหน้า
+        }
+
+        function closeTeamModal() {
+            document.getElementById("teamModal").style.display = "none";
+            document.body.style.overflow = "auto";
+        }
+
         function handleFollow() {
-            const btn = document.getElementById("followBtn");
-            if(btn.innerText === "Follow") {
-                btn.innerText = "Following";
-                btn.classList.replace("bg-white", "bg-sky-500");
-                btn.classList.replace("text-black", "text-white");
-                showToast("✅ กำลังติดตามรายการนี้แล้ว!");
+            const b = document.getElementById("followBtn");
+            if(b.innerText === "Follow") {
+                b.innerText = "Following"; b.className = "flex-1 bg-sky-500 text-white font-bold py-3 rounded-xl text-sm";
+                showToast("✅ ติดตามแล้ว!");
             } else {
-                btn.innerText = "Follow";
-                btn.classList.replace("bg-sky-500", "bg-white");
-                btn.classList.replace("text-white", "text-black");
+                b.innerText = "Follow"; b.className = "flex-1 bg-white text-black font-bold py-3 rounded-xl text-sm";
                 showToast("ยกเลิกการติดตาม");
             }
         }
 
-        function handleShare() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'FC26 Thailand Kickoff',
-                    url: window.location.href
-                }).then(() => showToast("แชร์สำเร็จ!")).catch(() => showToast("ยกเลิกการแชร์"));
-            } else {
-                showToast("🔗 คัดลอกลิงก์ไปยังคลิปบอร์ดแล้ว!");
-            }
-        }
-
         function toggleNotif() {
-            const btn = document.getElementById("notifBtn");
-            btn.classList.toggle("text-sky-400");
-            btn.classList.toggle("text-slate-400");
-            const isActive = btn.classList.contains("text-sky-400");
-            showToast(isActive ? "🔔 เปิดการแจ้งเตือนแมตช์สำคัญ" : "🔕 ปิดการแจ้งเตือน");
+            const i = document.querySelector("#notifBtn i");
+            const isOff = i.parentElement.classList.contains("text-slate-400");
+            i.parentElement.classList.toggle("text-slate-400");
+            i.parentElement.classList.toggle("text-sky-400");
+            showToast(isOff ? "🔔 เปิดแจ้งเตือนแมตช์" : "🔕 ปิดแจ้งเตือน");
         }
 
         function toggleFav() {
-            const btn = document.getElementById("favBtn");
-            btn.classList.toggle("text-red-500");
-            btn.classList.toggle("text-slate-400");
-            const isActive = btn.classList.contains("text-red-500");
-            showToast(isActive ? "❤️ เพิ่มในรายการโปรดแล้ว" : "นำออกจากรายการโปรด");
+            const i = document.querySelector("#favBtn i");
+            const isOff = i.parentElement.classList.contains("text-slate-400");
+            i.parentElement.classList.toggle("text-slate-400");
+            i.parentElement.classList.toggle("text-red-500");
+            showToast(isOff ? "❤️ เพิ่มในรายการโปรด" : "นำออกจากรายการโปรด");
         }
 
-        // ฟังก์ชันรับการกดปุ่มทั่วไป
-        function handleAction(actionName) {
-            showToast("กำลังเข้าสู่: " + actionName);
-        }
+        function handleShare() { showToast("🔗 คัดลอกลิงก์เรียบร้อย!"); }
+        function handleAction(name) { showToast("เข้าสู่หน้า: " + name); }
     </script>
 </body>
 </html>
