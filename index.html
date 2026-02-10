@@ -3,149 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FC26 Pro League & Tournament</title>
+    <title>FC26 PRO CHAMPIONSHIP</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap');
-        body { font-family: 'Kanit', sans-serif; background-color: #0b0f1a; color: white; }
-        .card { background: #161d2f; border: 1px solid #2d3748; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .nav-btn.active { border-bottom: 4px solid #3b82f6; color: #3b82f6; }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Kanit:wght@300;400;600&display=swap');
+        
+        :root {
+            --bg-dark: #05070a;
+            --card-dark: #0f172a;
+            --accent-blue: #38bdf8;
+        }
+
+        body { 
+            font-family: 'Kanit', sans-serif; 
+            background-color: var(--bg-dark); 
+            color: #e2e8f0;
+        }
+
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(56, 189, 248, 0.1); }
+        .active-tab { border-bottom: 3px solid var(--accent-blue); color: var(--accent-blue); }
+        .mvp-gradient { background: linear-gradient(135deg, #1e293b 0%, #0369a1 100%); }
     </style>
 </head>
-<body class="pb-10">
+<body class="min-h-screen">
 
-    <header class="bg-slate-900 border-b border-slate-700 p-6 text-center">
-        <h1 class="text-3xl font-bold italic text-blue-500">FC26 CHAMPIONSHIP HUB</h1>
-        <p class="text-slate-400 mt-2">ศูนย์รวมข้อมูลการแข่งขันอย่างเป็นทางการ</p>
-    </header>
-
-    <nav class="flex justify-center bg-slate-900 sticky top-0 z-50 border-b border-slate-700">
-        <button onclick="openTab('players')" class="nav-btn active px-6 py-4 font-bold transition">รายชื่อนักกีฬา</button>
-        <button onclick="openTab('league')" class="nav-btn px-6 py-4 font-bold transition">ตารางคะแนน (League)</button>
-        <button onclick="openTab('knockout')" class="nav-btn px-6 py-4 font-bold transition">รอบน็อคเอาท์</button>
+    <nav class="fixed w-full z-50 glass border-b border-white/5 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="w-10 h-10 bg-sky-500 rounded-lg flex items-center justify-center rotate-3">
+                <i class="fas fa-futbol text-white text-xl"></i>
+            </div>
+            <span class="font-orbitron text-xl font-bold tracking-tighter">FC26 <span class="text-sky-400">PRO</span></span>
+        </div>
+        <div class="hidden md:flex gap-8 text-sm font-medium uppercase tracking-widest">
+            <button onclick="switchTab('overview')" class="tab-link active-tab pb-1">Overview</button>
+            <button onclick="switchTab('standings')" class="tab-link pb-1">Group Stage</button>
+            <button onclick="switchTab('knockout')" class="tab-link pb-1">Knockout</button>
+            <button onclick="switchTab('players')" class="tab-link pb-1">Players</button>
+        </div>
     </nav>
 
-    <main class="max-w-6xl mx-auto mt-8 px-4">
+    <main class="pt-24 pb-12 px-4 max-w-7xl mx-auto">
+        
+        <div id="overview" class="tab-content">
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="md:col-span-2 mvp-gradient rounded-3xl p-8 relative overflow-hidden flex items-center shadow-2xl shadow-sky-900/20">
+                    <div class="relative z-10 w-2/3">
+                        <span class="bg-sky-400 text-black px-3 py-1 rounded-full text-xs font-bold uppercase">Player of the Week</span>
+                        <h2 class="text-4xl font-bold mt-4 font-orbitron uppercase">TH_STRIKER_01</h2>
+                        <p class="text-sky-200 mt-2">Team: Real Madrid CF | Stats: 12 Goals, 0 Defeat</p>
+                        <div class="flex gap-4 mt-6">
+                            <div class="text-center bg-black/30 p-3 rounded-xl w-20">
+                                <p class="text-xs text-sky-300">WIN</p>
+                                <p class="text-xl font-bold">5</p>
+                            </div>
+                            <div class="text-center bg-black/30 p-3 rounded-xl w-20">
+                                <p class="text-xs text-sky-300">PTS</p>
+                                <p class="text-xl font-bold">15</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute right-0 bottom-0 w-1/2 opacity-40">
+                        <i class="fas fa-user-ninja text-[200px] -mb-10"></i>
+                    </div>
+                </div>
 
-        <div id="players" class="tab-content active">
-            <h2 class="text-2xl font-bold mb-6"><i class="fas fa-users mr-2"></i>นักกีฬาที่เข้าร่วม</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="card p-4 rounded-xl flex items-center space-x-4">
-                    <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-2xl font-bold">P1</div>
-                    <div>
-                        <p class="font-bold text-lg">Pro_Player_TH</p>
-                        <p class="text-sm text-slate-400 italic">Manchester City</p>
-                    </div>
-                </div>
-                <div class="card p-4 rounded-xl flex items-center space-x-4">
-                    <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center text-2xl font-bold">P2</div>
-                    <div>
-                        <p class="font-bold text-lg">Goal_Hunter</p>
-                        <p class="text-sm text-slate-400 italic">Real Madrid</p>
-                    </div>
-                </div>
-                <div class="card p-4 rounded-xl flex items-center space-x-4">
-                    <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center text-2xl font-bold">P3</div>
-                    <div>
-                        <p class="font-bold text-lg">SkillMove_Master</p>
-                        <p class="text-sm text-slate-400 italic">Bayern Munich</p>
+                <div class="glass rounded-3xl p-6">
+                    <h3 class="font-bold mb-4 flex items-center gap-2"><i class="fas fa-history text-sky-400"></i> ล่าสุด</h3>
+                    <div class="space-y-4">
+                        <div class="bg-white/5 p-3 rounded-xl flex justify-between items-center border-l-4 border-green-500">
+                            <span class="text-sm">Player_A</span>
+                            <span class="font-orbitron text-sky-400">3 - 1</span>
+                            <span class="text-sm">Player_B</span>
+                        </div>
+                        <div class="bg-white/5 p-3 rounded-xl flex justify-between items-center border-l-4 border-red-500">
+                            <span class="text-sm">Player_C</span>
+                            <span class="font-orbitron text-sky-400">0 - 2</span>
+                            <span class="text-sm">Player_D</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="league" class="tab-content">
-            <h2 class="text-2xl font-bold mb-6"><i class="fas fa-table mr-2"></i>ตารางคะแนนสะสม</h2>
-            <div class="card rounded-xl overflow-hidden">
-                <table class="w-full text-left">
-                    <thead class="bg-slate-800 text-slate-300">
+        <div id="standings" class="tab-content hidden">
+            <h2 class="text-2xl font-bold mb-8 font-orbitron"><i class="fas fa-th-large mr-2"></i>GROUP STAGE (16 PLAYERS)</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="glass rounded-2xl p-5">
+                    <div class="bg-sky-500/20 text-sky-400 p-2 rounded-lg mb-4 text-center font-bold">GROUP A</div>
+                    <table class="w-full text-sm">
+                        <tr class="text-slate-500 border-b border-white/5">
+                            <th class="py-2 text-left">PLAYER</th>
+                            <th class="text-center">W-D-L</th>
+                            <th class="text-right">PTS</th>
+                        </tr>
+                        <tr class="border-b border-white/5">
+                            <td class="py-3">1. Pro_Champ_TH</td>
+                            <td class="text-center">3-0-0</td>
+                            <td class="text-right font-bold text-sky-400">9</td>
+                        </tr>
                         <tr>
-                            <th class="p-4">อันดับ</th>
-                            <th class="p-4">นักกีฬา</th>
-                            <th class="p-4 text-center">แข่ง</th>
-                            <th class="p-4 text-center">ชนะ</th>
-                            <th class="p-4 text-center">เสมอ</th>
-                            <th class="p-4 text-center">แพ้</th>
-                            <th class="p-4 text-center font-bold text-blue-400">แต้ม</th>
+                            <td class="py-3">2. Goal_Getter</td>
+                            <td class="text-center">1-1-1</td>
+                            <td class="text-right font-bold">4</td>
                         </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-700">
-                        <tr class="hover:bg-slate-800/50">
-                            <td class="p-4">1</td>
-                            <td class="p-4 font-bold text-yellow-500">Pro_Player_TH</td>
-                            <td class="p-4 text-center">3</td>
-                            <td class="p-4 text-center">3</td>
-                            <td class="p-4 text-center">0</td>
-                            <td class="p-4 text-center">0</td>
-                            <td class="p-4 text-center font-bold">9</td>
+                    </table>
+                </div>
+                <div class="glass rounded-2xl p-5">
+                    <div class="bg-purple-500/20 text-purple-400 p-2 rounded-lg mb-4 text-center font-bold">GROUP B</div>
+                    <table class="w-full text-sm">
+                        <tr class="text-slate-500 border-b border-white/5">
+                            <th class="py-2 text-left">PLAYER</th>
+                            <th class="text-center">W-D-L</th>
+                            <th class="text-right">PTS</th>
                         </tr>
-                        <tr class="hover:bg-slate-800/50">
-                            <td class="p-4">2</td>
-                            <td class="p-4">Goal_Hunter</td>
-                            <td class="p-4 text-center">3</td>
-                            <td class="p-4 text-center">2</td>
-                            <td class="p-4 text-center">0</td>
-                            <td class="p-4 text-center">1</td>
-                            <td class="p-4 text-center font-bold">6</td>
+                        <tr class="border-b border-white/5">
+                            <td class="py-3">1. WonderKid_07</td>
+                            <td class="text-center">2-1-0</td>
+                            <td class="text-right font-bold text-sky-400">7</td>
                         </tr>
-                    </tbody>
-                </table>
+                    </table>
+                </div>
+                </div>
+        </div>
+
+        <div id="knockout" class="tab-content hidden">
+            <div class="flex flex-col items-center">
+                <h2 class="text-2xl font-bold mb-12 font-orbitron italic text-center">ROAD TO CHAMPION</h2>
+                <div class="flex gap-12 overflow-x-auto w-full p-4">
+                    <div class="space-y-12">
+                        <div class="relative">
+                             <div class="text-xs text-sky-500 mb-2">SEMI FINAL 1</div>
+                             <div class="glass p-4 rounded-xl w-56 border-l-4 border-sky-500">
+                                <p class="flex justify-between"><span>TH_STRIKER</span> <span>2</span></p>
+                                <p class="flex justify-between opacity-50"><span>Goal_Getter</span> <span>0</span></p>
+                             </div>
+                        </div>
+                        <div class="relative">
+                            <div class="text-xs text-sky-500 mb-2">SEMI FINAL 2</div>
+                            <div class="glass p-4 rounded-xl w-56 border-l-4 border-sky-500">
+                               <p class="flex justify-between"><span>WonderKid</span> <span>3</span></p>
+                               <p class="flex justify-between"><span>Ninja_Gaming</span> <span>1</span></p>
+                            </div>
+                       </div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="text-center">
+                            <i class="fas fa-trophy text-6xl text-yellow-500 mb-4 animate-pulse"></i>
+                            <div class="glass p-6 rounded-2xl w-64 border-2 border-yellow-500/50 scale-110">
+                                <p class="text-xs mb-2">GRAND FINAL</p>
+                                <p class="font-bold">TH_STRIKER</p>
+                                <p class="text-xl font-orbitron my-2 text-sky-400">VS</p>
+                                <p class="font-bold">WonderKid</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div id="knockout" class="tab-content">
-            <h2 class="text-2xl font-bold mb-6"><i class="fas fa-sitemap mr-2"></i>สายการแข่งขันรอบน็อคเอาท์</h2>
-            <div class="flex flex-col md:flex-row justify-between items-center space-y-8 md:space-y-0 bg-slate-800 p-10 rounded-2xl overflow-x-auto">
-                
-                <div class="space-y-8">
-                    <p class="text-center text-slate-400 font-bold mb-4 uppercase">Semi-Finals</p>
-                    <div class="card p-3 rounded shadow-lg border-l-4 border-blue-500 w-48 text-sm">
-                        <div class="flex justify-between border-b border-slate-600 pb-1 mb-1"><span>Pro_Player_TH</span> <span>2</span></div>
-                        <div class="flex justify-between"><span>Skill_Master</span> <span class="text-slate-500">1</span></div>
-                    </div>
-                    <div class="card p-3 rounded shadow-lg border-l-4 border-blue-500 w-48 text-sm">
-                        <div class="flex justify-between border-b border-slate-600 pb-1 mb-1"><span>Goal_Hunter</span> <span>0</span></div>
-                        <div class="flex justify-between font-bold"><span>WonderKid_07</span> <span>3</span></div>
-                    </div>
+        <div id="players" class="tab-content hidden">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="glass p-4 rounded-2xl text-center hover:scale-105 transition border-b-2 border-transparent hover:border-sky-500">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=1" class="w-16 h-16 mx-auto rounded-full bg-slate-800 mb-3">
+                    <p class="font-bold">Pro_Player_01</p>
+                    <p class="text-xs text-slate-500 uppercase">Group A</p>
                 </div>
-
-                <div class="hidden md:block text-slate-600 font-bold text-2xl px-4">➡</div>
-
-                <div>
-                    <p class="text-center text-yellow-500 font-bold mb-4 uppercase text-lg">Grand Final</p>
-                    <div class="card p-5 rounded-xl shadow-2xl border-2 border-yellow-500 w-64 text-center">
-                        <p class="text-xs text-slate-400 mb-2 uppercase">15 มีนาคม | 20:00 น.</p>
-                        <p class="font-bold">Pro_Player_TH</p>
-                        <p class="text-2xl my-2">VS</p>
-                        <p class="font-bold italic">WonderKid_07</p>
-                    </div>
+                <div class="glass p-4 rounded-2xl text-center hover:scale-105 transition">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=2" class="w-16 h-16 mx-auto rounded-full bg-slate-800 mb-3">
+                    <p class="font-bold">Skill_King</p>
+                    <p class="text-xs text-slate-500 uppercase">Group A</p>
                 </div>
-
-            </div>
+                </div>
         </div>
 
     </main>
 
     <script>
-        function openTab(tabName) {
-            // ซ่อนคอนเทนต์ทั้งหมด
-            const contents = document.getElementsByClassName("tab-content");
-            for (let i = 0; i < contents.length; i++) {
-                contents[i].classList.remove("active");
-            }
-            // ลบคลาส active จากปุ่มทั้งหมด
-            const buttons = document.getElementsByClassName("nav-btn");
-            for (let i = 0; i < buttons.length; i++) {
-                buttons[i].classList.remove("active");
-            }
-            // แสดงคอนเทนต์ที่เลือกและไฮไลท์ปุ่ม
-            document.getElementById(tabName).classList.add("active");
-            event.currentTarget.classList.add("active");
+        function switchTab(tabId) {
+            // Hide all
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-link').forEach(el => el.classList.remove('active-tab'));
+            
+            // Show target
+            document.getElementById(tabId).classList.remove('hidden');
+            event.currentTarget.classList.add('active-tab');
         }
     </script>
-
 </body>
 </html>
